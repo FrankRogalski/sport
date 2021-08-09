@@ -27,7 +27,9 @@ data = {
     'likersTemplate': 'popover'
 }
 
-for i in range(10000):
+i = 0
+while True:
     requests.post('https://www.netto-online.de/vereinsspende/wp-admin/admin-ajax.php', headers=headers, data=data)
-    if (i + 1) % 100 == 0:
-        print(f'{i + 1} requests done')
+    i += 1
+    if i % 100 == 0:
+        print(f'{i} requests done')
