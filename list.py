@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor, wait
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0',
@@ -17,7 +18,7 @@ headers = {
 }
 
 vereine = []
-for i in range(160):
+def get_page(i):
     params = (
         ('type', 'load_more'),
         ('my_paged', str(i)),
@@ -36,6 +37,10 @@ for i in range(160):
         likes = int(card.find_next('span', {'class': 'count-box'}).text[1:].replace(".", ""))
         vereine.append((title, likes, location))
 
+
+with ThreadPoolExecutor(max_workers=100) as executor:
+    futures = [executor.submit(get_page, i) for i in range(160)]
+    wait(futures)
 vereine = sorted(set(vereine), key=lambda x: x[1], reverse=True)
 with open('/Users/frankrogalski/Privat/Python/2021-08-09 sport/jo.txt', 'w') as file:
     for verein in vereine:
