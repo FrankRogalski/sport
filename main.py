@@ -1,4 +1,6 @@
 import requests
+from concurrent.futures import ThreadPoolExecutor, wait
+from argparse import ArgumentParser
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0',
@@ -27,9 +29,23 @@ data = {
     'likersTemplate': 'popover'
 }
 
-i = 0
-while True:
-    requests.post('https://www.netto-online.de/vereinsspende/wp-admin/admin-ajax.php', headers=headers, data=data)
-    i += 1
-    if i % 100 == 0:
-        print(f'{i} requests done')
+def standard():
+    while True:
+        requests.post('https://www.netto-online.de/vereinsspende/wp-admin/admin-ajax.php', headers=headers, data=data)
+
+def threaded(threads):
+    with ThreadPoolExecutor(max_workers=threads) as executor:
+        futures = [executor.submit(standard) for _ in range(threads)]
+        wait(futures)
+
+def main():
+    parser = ArgumentParser('Parser for the Posthausen race')
+    parser.add_argument('-t', nargs='?', help='run in threaded mode and specify number of threads', type=int)
+    args = parser.parse_args()
+    if args.t:
+        threaded(args.t)
+    else:
+        standard()
+
+if __name__ == '__main__':
+    main()

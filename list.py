@@ -37,7 +37,7 @@ for i in range(160):
         vereine.append((title, likes, location))
 
 vereine = sorted(set(vereine), key=lambda x: x[1], reverse=True)
-with open('/Users/frankrogalski/Privat/Python/2021-08-09 sport.py/jo.txt', 'w') as file:
+with open('/Users/frankrogalski/Privat/Python/2021-08-09 sport/jo.txt', 'w') as file:
     for verein in vereine:
         file.write(str(verein) + '\n')
 
