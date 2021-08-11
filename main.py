@@ -31,7 +31,11 @@ data = {
 
 def standard():
     while True:
-        requests.post('https://www.netto-online.de/vereinsspende/wp-admin/admin-ajax.php', headers=headers, data=data)
+        try:
+            while True:
+                requests.post('https://www.netto-online.de/vereinsspende/wp-admin/admin-ajax.php', headers=headers, data=data)
+        except:
+            pass
 
 def threaded(threads):
     with ThreadPoolExecutor(max_workers=threads) as executor:
